@@ -134,7 +134,11 @@ main {
   font-size: 3rem;
   display: inline-block;
   transform-origin: 70% 70%;
-  animation: wave 2.5s ease-in-out infinite;
+  animation: wave 2.5s ease-in-out 1s infinite, fade-in 0.5s ease-out 0.8s both;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
 }
 
 @keyframes wave {
@@ -144,46 +148,57 @@ main {
   50% { transform: rotate(10deg); }
 }
 
+/* Top Gear style title: a fast, italic slide-in from the right with speed streaks trailing behind */
 h1 {
-  margin: 8px 0 16px;
+  position: relative;
+  margin: 8px 0 40px;
   font-size: clamp(3rem, 15vw, 9rem);
+  font-style: italic;
+  font-weight: 900;
   line-height: 1;
   letter-spacing: -0.04em;
-  background: linear-gradient(to bottom, #fff 35%, #ffb3e0 55%, var(--pink) 80%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 0 18px rgba(255, 42, 109, 0.75));
+  color: var(--pink);
+  filter: blur(0) drop-shadow(0 0 18px rgba(255, 42, 109, 0.75));
+  animation: swoosh 0.9s cubic-bezier(0.12, 0.8, 0.25, 1) both;
 }
 
-.role {
-  display: table;
-  margin: 0 auto 28px;
-  padding: 6px 14px;
-  min-height: 1.6em;
-  font-size: clamp(1rem, 3.5vw, 1.5rem);
-  color: var(--muted);
-  background: rgba(13, 2, 33, 0.55);
-  border-radius: 6px;
+@keyframes swoosh {
+  0% {
+    transform: translateX(110vw) skewX(-24deg);
+    filter: blur(14px) drop-shadow(0 0 18px rgba(255, 42, 109, 0.75));
+  }
+  70% {
+    transform: translateX(-3vw) skewX(-8deg);
+    filter: blur(2px) drop-shadow(0 0 18px rgba(255, 42, 109, 0.75));
+  }
+  85% {
+    transform: translateX(1vw) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(0) skewX(-12deg);
+    filter: blur(0) drop-shadow(0 0 18px rgba(255, 42, 109, 0.75));
+  }
 }
 
-.prompt {
-  color: var(--cyan);
-  margin-right: 8px;
+/* Speed streaks that trail the title and collapse into it as it settles */
+h1::before {
+  content: "";
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  left: 100%;
+  width: 70vw;
+  background: repeating-linear-gradient(to bottom, var(--pink) 0 3px, transparent 3px 14px);
+  mask-image: linear-gradient(to right, #000, transparent);
+  -webkit-mask-image: linear-gradient(to right, #000, transparent);
+  transform-origin: left center;
+  animation: streaks 0.9s ease-out both;
 }
 
-.cursor {
-  display: inline-block;
-  width: 0.6em;
-  height: 1.1em;
-  margin-left: 4px;
-  vertical-align: text-bottom;
-  background: var(--pink);
-  animation: blink 1s steps(1) infinite;
-}
-
-@keyframes blink {
-  50% { opacity: 0; }
+@keyframes streaks {
+  0% { transform: scaleX(1); opacity: 1; }
+  70% { transform: scaleX(0.6); opacity: 1; }
+  100% { transform: scaleX(0); opacity: 0; }
 }
 
 .button {
@@ -199,6 +214,7 @@ h1 {
   background: rgba(13, 2, 33, 0.7);
   box-shadow: 0 0 20px rgba(5, 217, 232, 0.35), inset 0 0 12px rgba(5, 217, 232, 0.2);
   transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  animation: fade-in 0.5s ease-out 0.9s both;
 }
 
 .button:hover,
@@ -210,6 +226,10 @@ h1 {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  h1::before {
+    display: none;
+  }
+
   *, *::before, *::after {
     animation: none !important;
     transition: none !important;

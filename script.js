@@ -1,33 +1,4 @@
-const phrases = [
-  "Software Developer",
-  "builds things for the web",
-  "turns coffee into code",
-  "says hello 👋🏽",
-];
-
-const typed = document.getElementById("typed");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-async function typeLoop() {
-  if (reducedMotion) {
-    typed.textContent = phrases[0];
-    return;
-  }
-  for (let i = 0; ; i = (i + 1) % phrases.length) {
-    const phrase = [...phrases[i]];
-    for (let n = 1; n <= phrase.length; n++) {
-      typed.textContent = phrase.slice(0, n).join("");
-      await sleep(70);
-    }
-    await sleep(1800);
-    for (let n = phrase.length; n >= 0; n--) {
-      typed.textContent = phrase.slice(0, n).join("");
-      await sleep(35);
-    }
-    await sleep(300);
-  }
-}
 
 // Starfield in the sky above the horizon; drifts and gently reacts to the pointer
 const canvas = document.getElementById("stars");
@@ -132,5 +103,4 @@ window.addEventListener("pointermove", (event) => {
 });
 
 resize();
-typeLoop();
 requestAnimationFrame(frame);
