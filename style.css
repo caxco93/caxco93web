@@ -1,10 +1,11 @@
 :root {
-  --bg: #0a0a0f;
-  --fg: #f4f4f8;
-  --muted: #8b8ba3;
-  --accent-1: #2196f3;
-  --accent-2: #b146ff;
-  --accent-3: #ff4d8d;
+  --bg: #0d0221;
+  --fg: #f4ecff;
+  --muted: #cbb8f5;
+  --pink: #ff2a6d;
+  --purple: #b146ff;
+  --cyan: #05d9e8;
+  --horizon: 45vh; /* height of the floor, i.e. distance from the bottom to the horizon */
 }
 
 * {
@@ -22,41 +23,103 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  padding-bottom: 38vh;
   display: grid;
   place-items: center;
   overflow: hidden;
 }
 
-#stars {
+/* Sky gradient, brightest at the horizon */
+body::before {
+  content: "";
   position: fixed;
   inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    #0d0221 0%,
+    #1f0b45 30%,
+    #5c1a6e calc(100% - var(--horizon) - 18vh),
+    #ff2a6d calc(100% - var(--horizon) - 4vh),
+    #ff9e4a calc(100% - var(--horizon))
+  );
+}
+
+#stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - var(--horizon));
+}
+
+/* Striped retro sun, half-set behind the horizon */
+.sun {
+  position: fixed;
+  left: 50%;
+  bottom: var(--horizon);
+  width: min(46vh, 80vw);
+  aspect-ratio: 1;
+  transform: translate(-50%, 28%);
+  filter: drop-shadow(0 0 40px rgba(255, 42, 109, 0.7));
+}
+
+.sun-disc {
   width: 100%;
   height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(to bottom, #fff36b 10%, #ff9e4a 45%, #ff2a6d 80%, #b146ff);
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0 48%,
+    transparent 48% 51%,
+    #000 51% 58%,
+    transparent 58% 63%,
+    #000 63% 69%,
+    transparent 69% 76%,
+    #000 76% 81%,
+    transparent 81% 89%,
+    #000 89%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0 48%,
+    transparent 48% 51%,
+    #000 51% 58%,
+    transparent 58% 63%,
+    #000 63% 69%,
+    transparent 69% 76%,
+    #000 76% 81%,
+    transparent 81% 89%,
+    #000 89%
+  );
 }
 
-/* Perspective grid floor */
-.grid {
+.mountains {
   position: fixed;
-  left: -50%;
-  right: -50%;
-  bottom: 0;
-  height: 55vh;
-  background-image:
-    linear-gradient(var(--accent-2) 1px, transparent 1px),
-    linear-gradient(90deg, var(--accent-2) 1px, transparent 1px);
-  background-size: 60px 60px;
-  opacity: 0.25;
-  transform: perspective(300px) rotateX(60deg);
-  transform-origin: center bottom;
-  animation: scroll 2s linear infinite;
-  mask-image: linear-gradient(to top, black, transparent 90%);
-  -webkit-mask-image: linear-gradient(to top, black, transparent 90%);
+  left: 0;
+  bottom: var(--horizon);
+  width: 100%;
+  height: 14vh;
 }
 
-@keyframes scroll {
-  to {
-    background-position: 0 60px;
-  }
+.mountains polygon {
+  fill: #12002b;
+  stroke: var(--cyan);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 6px var(--cyan));
+}
+
+/* Mode 7 floor, rendered at a low internal resolution and scaled up */
+#floor {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: var(--horizon);
+  image-rendering: pixelated;
+  box-shadow: 0 -4px 30px var(--pink);
 }
 
 main {
@@ -68,7 +131,7 @@ main {
 
 .wave {
   margin: 0;
-  font-size: 4rem;
+  font-size: 3rem;
   display: inline-block;
   transform-origin: 70% 70%;
   animation: wave 2.5s ease-in-out infinite;
@@ -86,67 +149,26 @@ h1 {
   font-size: clamp(3rem, 15vw, 9rem);
   line-height: 1;
   letter-spacing: -0.04em;
-  background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
-  background-size: 300% 100%;
+  background: linear-gradient(to bottom, #fff 35%, #ffb3e0 55%, var(--pink) 80%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: flow 6s linear infinite;
-}
-
-@keyframes flow {
-  to {
-    background-position: 300% 0;
-  }
-}
-
-/* Occasional RGB-split glitch */
-.glitch {
-  position: relative;
-}
-
-.glitch::before,
-.glitch::after {
-  content: attr(data-text);
-  position: absolute;
-  inset: 0;
-  background: inherit;
-  -webkit-background-clip: text;
-  background-clip: text;
-  opacity: 0;
-}
-
-.glitch::before {
-  animation: glitch-a 5s infinite steps(1);
-  text-shadow: -3px 0 var(--accent-3);
-}
-
-.glitch::after {
-  animation: glitch-b 5s infinite steps(1);
-  text-shadow: 3px 0 var(--accent-1);
-}
-
-@keyframes glitch-a {
-  0%, 92%, 100% { opacity: 0; transform: none; }
-  93% { opacity: 0.8; transform: translate(-4px, 2px); clip-path: inset(10% 0 60% 0); }
-  96% { opacity: 0.8; transform: translate(3px, -2px); clip-path: inset(55% 0 10% 0); }
-}
-
-@keyframes glitch-b {
-  0%, 92%, 100% { opacity: 0; transform: none; }
-  94% { opacity: 0.8; transform: translate(4px, -2px); clip-path: inset(60% 0 5% 0); }
-  97% { opacity: 0.8; transform: translate(-3px, 2px); clip-path: inset(5% 0 65% 0); }
+  filter: drop-shadow(0 0 18px rgba(255, 42, 109, 0.75));
 }
 
 .role {
-  margin: 0 0 40px;
+  display: table;
+  margin: 0 auto 28px;
+  padding: 6px 14px;
   min-height: 1.6em;
   font-size: clamp(1rem, 3.5vw, 1.5rem);
   color: var(--muted);
+  background: rgba(13, 2, 33, 0.55);
+  border-radius: 6px;
 }
 
 .prompt {
-  color: var(--accent-2);
+  color: var(--cyan);
   margin-right: 8px;
 }
 
@@ -156,7 +178,7 @@ h1 {
   height: 1.1em;
   margin-left: 4px;
   vertical-align: text-bottom;
-  background: var(--accent-1);
+  background: var(--pink);
   animation: blink 1s steps(1) infinite;
 }
 
@@ -169,21 +191,21 @@ h1 {
   align-items: center;
   gap: 10px;
   padding: 14px 28px;
-  border: 1px solid var(--accent-2);
+  border: 1px solid var(--cyan);
   border-radius: 999px;
-  color: var(--fg);
+  color: var(--cyan);
   font-size: 1rem;
   text-decoration: none;
-  background: rgba(177, 70, 255, 0.08);
-  box-shadow: 0 0 20px rgba(177, 70, 255, 0.25);
+  background: rgba(13, 2, 33, 0.7);
+  box-shadow: 0 0 20px rgba(5, 217, 232, 0.35), inset 0 0 12px rgba(5, 217, 232, 0.2);
   transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
 .button:hover,
 .button:focus-visible {
   transform: translateY(-3px) scale(1.04);
-  background: rgba(177, 70, 255, 0.2);
-  box-shadow: 0 0 40px rgba(177, 70, 255, 0.6);
+  background: rgba(5, 217, 232, 0.15);
+  box-shadow: 0 0 40px rgba(5, 217, 232, 0.7), inset 0 0 16px rgba(5, 217, 232, 0.3);
   outline: none;
 }
 
