@@ -129,23 +129,8 @@ main {
   text-align: center;
 }
 
-.wave {
-  margin: 0;
-  font-size: 3rem;
-  display: inline-block;
-  transform-origin: 70% 70%;
-  animation: wave 2.5s ease-in-out 1s infinite, fade-in 0.5s ease-out 0.8s both;
-}
-
 @keyframes fade-in {
   from { opacity: 0; }
-}
-
-@keyframes wave {
-  0%, 60%, 100% { transform: rotate(0); }
-  10%, 30% { transform: rotate(14deg); }
-  20%, 40% { transform: rotate(-8deg); }
-  50% { transform: rotate(10deg); }
 }
 
 /* Top Gear style title: a fast, italic slide-in from the right with speed streaks trailing behind */
