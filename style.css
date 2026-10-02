@@ -1,0 +1,195 @@
+:root {
+  --bg: #0a0a0f;
+  --fg: #f4f4f8;
+  --muted: #8b8ba3;
+  --accent-1: #2196f3;
+  --accent-2: #b146ff;
+  --accent-3: #ff4d8d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  background-color: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+#stars {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Perspective grid floor */
+.grid {
+  position: fixed;
+  left: -50%;
+  right: -50%;
+  bottom: 0;
+  height: 55vh;
+  background-image:
+    linear-gradient(var(--accent-2) 1px, transparent 1px),
+    linear-gradient(90deg, var(--accent-2) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.25;
+  transform: perspective(300px) rotateX(60deg);
+  transform-origin: center bottom;
+  animation: scroll 2s linear infinite;
+  mask-image: linear-gradient(to top, black, transparent 90%);
+  -webkit-mask-image: linear-gradient(to top, black, transparent 90%);
+}
+
+@keyframes scroll {
+  to {
+    background-position: 0 60px;
+  }
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  padding: 16px;
+  text-align: center;
+}
+
+.wave {
+  margin: 0;
+  font-size: 4rem;
+  display: inline-block;
+  transform-origin: 70% 70%;
+  animation: wave 2.5s ease-in-out infinite;
+}
+
+@keyframes wave {
+  0%, 60%, 100% { transform: rotate(0); }
+  10%, 30% { transform: rotate(14deg); }
+  20%, 40% { transform: rotate(-8deg); }
+  50% { transform: rotate(10deg); }
+}
+
+h1 {
+  margin: 8px 0 16px;
+  font-size: clamp(3rem, 15vw, 9rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-1));
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: flow 6s linear infinite;
+}
+
+@keyframes flow {
+  to {
+    background-position: 300% 0;
+  }
+}
+
+/* Occasional RGB-split glitch */
+.glitch {
+  position: relative;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0;
+}
+
+.glitch::before {
+  animation: glitch-a 5s infinite steps(1);
+  text-shadow: -3px 0 var(--accent-3);
+}
+
+.glitch::after {
+  animation: glitch-b 5s infinite steps(1);
+  text-shadow: 3px 0 var(--accent-1);
+}
+
+@keyframes glitch-a {
+  0%, 92%, 100% { opacity: 0; transform: none; }
+  93% { opacity: 0.8; transform: translate(-4px, 2px); clip-path: inset(10% 0 60% 0); }
+  96% { opacity: 0.8; transform: translate(3px, -2px); clip-path: inset(55% 0 10% 0); }
+}
+
+@keyframes glitch-b {
+  0%, 92%, 100% { opacity: 0; transform: none; }
+  94% { opacity: 0.8; transform: translate(4px, -2px); clip-path: inset(60% 0 5% 0); }
+  97% { opacity: 0.8; transform: translate(-3px, 2px); clip-path: inset(5% 0 65% 0); }
+}
+
+.role {
+  margin: 0 0 40px;
+  min-height: 1.6em;
+  font-size: clamp(1rem, 3.5vw, 1.5rem);
+  color: var(--muted);
+}
+
+.prompt {
+  color: var(--accent-2);
+  margin-right: 8px;
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  margin-left: 4px;
+  vertical-align: text-bottom;
+  background: var(--accent-1);
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border: 1px solid var(--accent-2);
+  border-radius: 999px;
+  color: var(--fg);
+  font-size: 1rem;
+  text-decoration: none;
+  background: rgba(177, 70, 255, 0.08);
+  box-shadow: 0 0 20px rgba(177, 70, 255, 0.25);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.button:hover,
+.button:focus-visible {
+  transform: translateY(-3px) scale(1.04);
+  background: rgba(177, 70, 255, 0.2);
+  box-shadow: 0 0 40px rgba(177, 70, 255, 0.6);
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
